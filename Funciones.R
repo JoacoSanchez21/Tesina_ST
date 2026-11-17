@@ -132,7 +132,7 @@ metricas_pronostico <- function(pronostico, serie_test) {
 # 4) Imputadores
 imputadores <- list(
   `Valor aleatorio`                              = function(x) na_random(x),
-  `Valor definido`                               = function(x) na_replace(x),
+  `Valor definido`                               = function(x) na_replace(x, fill = 10),
   `Valor medio`                                  = function(x) na_mean(x, option = "mean"),
   `Valor mediano`                                = function(x) na_mean(x, option = "median"),
   `Valor modal`                                  = function(x) na_mean(x, option = "mode"),
@@ -150,163 +150,165 @@ imputadores <- list(
   `Representación del espacio en estados de ARIMA y suavizado de Kalman` = function(x) na_kalman(x, model = "auto.arima")
 )
 
-# 5) Función principal
-errores <- function(serie_train, serie_trainNA, indices_na, h = 1, serie_test, pronostico = "ARIMA") {
-  
-  errores_imp <- list()
-  errores_pro <- list()
-  
-  for (nombre in names(imputadores)) {
-    
-    serie_imp <- imputadores[[nombre]](serie_trainNA)
-    
-    errores_imp[[nombre]] <- metricas_imputacion(serie_train, serie_imp, indices_na)
-    
-    fc <- ajustar_pronostico(serie_imp, modelo = pronostico, h = h)
-    
-    errores_pro[[nombre]] <- metricas_pronostico(fc, serie_test)
-  }
-  
-  errores_imp_df <- do.call(rbind, errores_imp)
-  errores_pro_df <- do.call(rbind, errores_pro)
-  
-  resultados <- cbind(
-    Metodo = rownames(errores_imp_df),
-    errores_imp_df,
-    errores_pro_df
-  )
-  
-  colnames(resultados) <- c("Metodo",
-                            "RMSE_Imp", "MAE_Imp", "MAPE_Imp",
-                            "RMSE_Pro", "MAE_Pro", "MAPE_Pro")
-  
-  resultados$Metodo <- factor(resultados$Metodo, levels = names(imputadores))
-  resultados <- resultados[order(resultados$Metodo), ]
-  
-  return(resultados)
-}
-
-
-errores_prophet <- function(serie_train_NA, serie_test, h){
-  
-  fechas <- seq.Date(
-    from = as.Date(paste(start(serie_train_NA)[1], start(serie_train_NA)[2], "01", sep = "-")),
-    by = "month",
-    length.out = length(serie_train_NA)
-  )
-  
-  df_prophet <- data.frame(
-    ds = as.character(fechas), 
-    y = as.numeric(serie_train_NA)
-  )
-  
-  m <- prophet(
-    seasonality.mode = 'multiplicative', 
-    yearly.seasonality = TRUE,
-    weekly.seasonality = FALSE,
-    daily.seasonality = FALSE 
-  )
-  
-  m <- fit.prophet(m, df_prophet)
-  fechas_todas <- seq.Date(
-    from = min(fechas), 
-    by = "month", 
-    length.out = length(fechas) + h
-  )
-  futuro <- data.frame(ds = as.character(fechas_todas))
-  
-  pred <- predict(m, futuro)
-  valores_pronosticados <- tail(pred$yhat, h)
-  
-  reales <- as.numeric(serie_test)[1:h]
-  
-  rmse_val <- sqrt(mean((valores_pronosticados - reales)^2))
-  mae_val  <- mean(abs(valores_pronosticados - reales))
-  mape_val <- mean(abs(valores_pronosticados - reales) / abs(reales)) * 100
-  
-  return(data.frame(
-    Metodo = "Prophet",
-    RMSE = rmse_val,
-    MAE  = mae_val,
-    MAPE = mape_val
-  ))
-}
-
 #-------------------------------------------------------------------------------
-
+# Función principal
 ejecutar_simulacion <- function(
-    serie_train, serie_test, mecanismo_na, prop, h, modelo,
-    n_iteraciones = 100, resultado, ...
+    serie_train, serie_test, mecanismo_na, prop,
+    horizontes = c(3, 6, 12),
+    n_iteraciones = 100, resultado,
+    semilla = 123,
+    ...
 ) {
   
-  resultados_acum <- NULL
-  iteraciones_exitosas <- 0
+  horizontes <- sort(unique(as.integer(horizontes)))
+  h_max <- max(horizontes)
+  stopifnot(length(serie_test) >= h_max)
   
-  for (i in 1:n_iteraciones) {
-    if (i %% 10 == 0) {
-      cat("Iteración", i, "de", n_iteraciones, "...\n")
-    }
-    
-    serie_train_NA <- mecanismo_na(
-      serie_train,
-      prop = prop,
-      ...
-    )
-    
-    indices_borrados <- which(is.na(serie_train_NA))
-    
-    res <- tryCatch({
-      errores(
-        serie_train,
-        serie_train_NA,
-        indices_borrados,
-        h = h,
-        serie_test,
-        pronostico = modelo
+  reales <- as.numeric(serie_test)[1:h_max]
+  
+  resultados_imp <- list()
+  resultados_pro <- list()
+  
+  inicio_train <- start(serie_train)
+  inicio_test  <- start(serie_test)
+  
+  fecha_inicio_train <- as.Date(sprintf("%04d-%02d-01", inicio_train[1], inicio_train[2]))
+  fecha_inicio_test  <- as.Date(sprintf("%04d-%02d-01", inicio_test[1],  inicio_test[2]))
+  
+  fechas_train <- seq.Date(fecha_inicio_train, by = "month", length.out = length(serie_train))
+  fechas_test  <- seq.Date(fecha_inicio_test,  by = "month", length.out = h_max)
+  
+  calcular_metricas <- function(pronosticos) {
+    bind_rows(lapply(horizontes, function(h) {
+      error <- reales[1:h] - pronosticos[1:h]
+      data.frame(
+        Horizonte = h,
+        RMSE_Pro  = sqrt(mean(error^2)),
+        MAE_Pro   = mean(abs(error)),
+        MAPE_Pro  = mean(abs(error) / pmax(abs(reales[1:h]), 1e-8) * 100)
       )
+    }))
+  }
+  
+  for (i in seq_len(n_iteraciones)) {
+    
+    cat("Iteración", i, "de", n_iteraciones, "...\n")
+    
+    set.seed(semilla + i)
+    
+    serie_NA   <- mecanismo_na(serie_train, prop = prop, ...)
+    indices_na <- which(is.na(serie_NA))
+    
+    resultado_prophet <- tryCatch({
+      
+      datos_prophet <- data.frame(ds = fechas_train, y = as.numeric(serie_NA))
+      
+      modelo_prophet <- prophet::prophet(
+        df = datos_prophet,
+        seasonality.mode   = "multiplicative",
+        yearly.seasonality = TRUE,
+        weekly.seasonality = FALSE,
+        daily.seasonality  = FALSE,
+        uncertainty.samples = 0             # CAMBIO
+      )
+      
+      pred <- predict(modelo_prophet, data.frame(ds = fechas_test))
+      calcular_metricas(as.numeric(pred$yhat))
+      
     }, error = function(e) {
-      message(
-        "\n[!] Error en iteración ", i,
-        " saltando. Detalle: ", e$message
-      )
-      return(NULL)
+      message("Error en Prophet, iteración ", i, ": ", e$message)
+      NULL
     })
     
-    if (!is.null(res)) {
-      iteraciones_exitosas <- iteraciones_exitosas + 1
+    if (!is.null(resultado_prophet)) {
+      resultados_pro[[length(resultados_pro) + 1]] <-
+        cbind(data.frame(Iteracion = i, Metodo = "Sin imputación", Modelo = "Prophet"),
+              resultado_prophet)
+    }
+    
+    # --- Imputación y modelos ---
+    for (nombre in names(imputadores)) {
       
-      if (is.null(resultados_acum)) {
-        resultados_acum <- res
-      } else {
-        resultados_acum[, -1] <-
-          as.matrix(resultados_acum[, -1]) +
-          as.matrix(res[, -1])
+      serie_imp <- tryCatch({
+        
+        x <- imputadores[[nombre]](serie_NA)
+        
+        if (length(x) != length(serie_train) || anyNA(x)) {
+          stop("Imputación incompleta o longitud incorrecta.")
+        }
+        
+        ts(as.numeric(x), start = start(serie_train), frequency = frequency(serie_train))
+        
+      }, error = function(e) {
+        message("Error en imputación ", nombre, ", iteración ", i, ": ", e$message)
+        NULL
+      })
+      
+      if (is.null(serie_imp)) next
+      
+      met_imp <- metricas_imputacion(serie_train, serie_imp, indices_na)
+      
+      resultados_imp[[length(resultados_imp) + 1]] <-
+        data.frame(
+          Iteracion = i,
+          Metodo    = nombre,
+          RMSE_Imp  = met_imp$RMSE,
+          MAE_Imp   = met_imp$MAE,
+          MAPE_Imp  = met_imp$MAPE
+        )
+      
+      for (modelo in c("ARIMA", "ETS")) {
+        
+        resultado_modelo <- tryCatch({
+          fc <- ajustar_pronostico(serie_imp, modelo = modelo, h = h_max)   # CAMBIO: h_max
+          calcular_metricas(as.numeric(fc$mean))
+        }, error = function(e) {
+          message("Error en ", modelo, ", método ", nombre, ", iteración ", i, ": ", e$message)
+          NULL
+        })
+        
+        if (!is.null(resultado_modelo)) {
+          resultados_pro[[length(resultados_pro) + 1]] <-
+            cbind(data.frame(Iteracion = i, Metodo = nombre, Modelo = modelo),
+                  resultado_modelo)
+        }
       }
     }
   }
   
-  if (iteraciones_exitosas > 0) {
-    resultados_finales <- resultados_acum
-    
-    resultados_finales[, -1] <-
-      resultados_finales[, -1] / iteraciones_exitosas
-    
-    saveRDS(resultados_finales, file = resultado)
-    
-    cat(
-      "Completado. Guardado en:", resultado,
-      "(", iteraciones_exitosas,
-      "iteraciones exitosas)\n"
+  metricas_imp <- bind_rows(resultados_imp)
+  metricas_pro <- bind_rows(resultados_pro)
+  
+  resumen_imp <- metricas_imp %>%
+    group_by(Metodo) %>%
+    summarise(
+      N_Iteraciones = n(),
+      across(c(RMSE_Imp, MAE_Imp, MAPE_Imp), mean),
+      .groups = "drop"
     )
-    
-    return(resultados_finales)
-    
-  } else {
-    stop("Todas las iteraciones fallaron.")
-  }
+  
+  resumen_pro <- metricas_pro %>%
+    group_by(Metodo, Modelo, Horizonte) %>%
+    summarise(
+      N_Iteraciones = n(),
+      across(c(RMSE_Pro, MAE_Pro, MAPE_Pro), mean),
+      .groups = "drop"
+    )
+  
+  resultados_finales <- list(
+    Metricas_Imputacion = metricas_imp,
+    Metricas_Pronostico = metricas_pro,
+    Resumen_Imputacion  = resumen_imp,
+    Resumen_Pronostico  = resumen_pro,
+    Meta = list(prop = prop, horizontes = horizontes, n_iteraciones = n_iteraciones)
+  )
+  
+  dir.create(dirname(resultado), recursive = TRUE, showWarnings = FALSE)
+  saveRDS(resultados_finales, file = resultado)
 }
 
 #-------------------------------------------------------------------------------
+# Función para calcular pronósticos usando la serie sin faltantes
 ejecutar_pronosticos <- function(
     serie_train,
     serie_test,

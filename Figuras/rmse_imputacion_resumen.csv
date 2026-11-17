@@ -1,0 +1,205 @@
+pct,mecanismo,Metodo,RMSE_Imp
+10,MAR,Descomposición estacional,0.48661504864302535
+10,MAR,División estacional,0.5426313460123068
+10,MAR,Interpolación de Stineman,0.8032524675596511
+10,MAR,Interpolación lineal,0.7990953142414473
+10,MAR,Interpolación spline,0.8723895240959597
+10,MAR,Media móvil lineal ponderada,1.0324362153166833
+10,MAR,Media móvil ponderada exponencial,0.953760380067204
+10,MAR,Media móvil simple,1.1176905997572453
+10,MAR,Representación del espacio en estados de ARIMA y suavizado de Kalman,0.5254544927718214
+10,MAR,Siguiente observación trasladada hacia atrás,1.043493109212766
+10,MAR,Suavizado de Kalman en un modelo estructural,0.5060425245318789
+10,MAR,Valor aleatorio,1.9306502992625085
+10,MAR,Valor definido,1.4640962797509351
+10,MAR,Valor mediano,1.16002259657001
+10,MAR,Valor medio,1.1144750186393455
+10,MAR,Valor modal,2.7672443932183097
+10,MAR,Última observación trasladada hacia adelante,1.0562813190770093
+25,MAR,Descomposición estacional,0.5776921579154407
+25,MAR,División estacional,0.5887126032614218
+25,MAR,Interpolación de Stineman,0.8773241650765546
+25,MAR,Interpolación lineal,0.8753239834463852
+25,MAR,Interpolación spline,0.9621532551976416
+25,MAR,Media móvil lineal ponderada,1.0437626440069299
+25,MAR,Media móvil ponderada exponencial,0.9809095244400045
+25,MAR,Media móvil simple,1.1182285526263567
+25,MAR,Representación del espacio en estados de ARIMA y suavizado de Kalman,0.5698402201750603
+25,MAR,Siguiente observación trasladada hacia atrás,1.0928743982213167
+25,MAR,Suavizado de Kalman en un modelo estructural,0.5351317792266049
+25,MAR,Valor aleatorio,1.9379269938097508
+25,MAR,Valor definido,1.4319337110741053
+25,MAR,Valor mediano,1.1577906886771323
+25,MAR,Valor medio,1.1161793395252302
+25,MAR,Valor modal,2.694705156409741
+25,MAR,Última observación trasladada hacia adelante,1.1318217389212868
+40,MAR,Descomposición estacional,0.6952886094502039
+40,MAR,División estacional,0.6395307346152372
+40,MAR,Interpolación de Stineman,0.9546884465416822
+40,MAR,Interpolación lineal,0.9496494441011681
+40,MAR,Interpolación spline,1.1299969620816903
+40,MAR,Media móvil lineal ponderada,1.0579558626148466
+40,MAR,Media móvil ponderada exponencial,1.0142080887988336
+40,MAR,Media móvil simple,1.1175583586212936
+40,MAR,Representación del espacio en estados de ARIMA y suavizado de Kalman,0.6092386670465395
+40,MAR,Siguiente observación trasladada hacia atrás,1.1250641038190363
+40,MAR,Suavizado de Kalman en un modelo estructural,0.561962090563238
+40,MAR,Valor aleatorio,1.9324184478577753
+40,MAR,Valor definido,1.4248735626371207
+40,MAR,Valor mediano,1.1701433078443428
+40,MAR,Valor medio,1.1254489085984236
+40,MAR,Valor modal,2.662120849952052
+40,MAR,Última observación trasladada hacia adelante,1.189836217559791
+10,MCAR (disperso),Descomposición estacional,0.5059430849566604
+10,MCAR (disperso),División estacional,0.5720736146308163
+10,MCAR (disperso),Interpolación de Stineman,0.7679853683146243
+10,MCAR (disperso),Interpolación lineal,0.7635679034969337
+10,MCAR (disperso),Interpolación spline,0.874335217711794
+10,MCAR (disperso),Media móvil lineal ponderada,0.9671651109443775
+10,MCAR (disperso),Media móvil ponderada exponencial,0.8911592784723338
+10,MCAR (disperso),Media móvil simple,1.0515422624404003
+10,MCAR (disperso),Representación del espacio en estados de ARIMA y suavizado de Kalman,0.576971377276091
+10,MCAR (disperso),Siguiente observación trasladada hacia atrás,1.0393392888504103
+10,MCAR (disperso),Suavizado de Kalman en un modelo estructural,0.5356422426812002
+10,MCAR (disperso),Valor aleatorio,1.9686473472893724
+10,MCAR (disperso),Valor definido,1.2930544671240933
+10,MCAR (disperso),Valor mediano,1.0588061532107307
+10,MCAR (disperso),Valor medio,1.0500531772970043
+10,MCAR (disperso),Valor modal,2.554062976341877
+10,MCAR (disperso),Última observación trasladada hacia adelante,1.0042823653017767
+25,MCAR (disperso),Descomposición estacional,0.5809043444854022
+25,MCAR (disperso),División estacional,0.6073985190621224
+25,MCAR (disperso),Interpolación de Stineman,0.8543517499313321
+25,MCAR (disperso),Interpolación lineal,0.8496858781681549
+25,MCAR (disperso),Interpolación spline,0.9712819042263847
+25,MCAR (disperso),Media móvil lineal ponderada,1.0032426680911033
+25,MCAR (disperso),Media móvil ponderada exponencial,0.9407372711263083
+25,MCAR (disperso),Media móvil simple,1.0786248537235223
+25,MCAR (disperso),Representación del espacio en estados de ARIMA y suavizado de Kalman,0.5996637215751864
+25,MCAR (disperso),Siguiente observación trasladada hacia atrás,1.1102228254253381
+25,MCAR (disperso),Suavizado de Kalman en un modelo estructural,0.5573463218556598
+25,MCAR (disperso),Valor aleatorio,1.9207888163681959
+25,MCAR (disperso),Valor definido,1.3262574504274276
+25,MCAR (disperso),Valor mediano,1.092044837364133
+25,MCAR (disperso),Valor medio,1.0803682031926474
+25,MCAR (disperso),Valor modal,2.5528245969763823
+25,MCAR (disperso),Última observación trasladada hacia adelante,1.1028893604788066
+40,MCAR (disperso),Descomposición estacional,0.6598797884378818
+40,MCAR (disperso),División estacional,0.6488073117683683
+40,MCAR (disperso),Interpolación de Stineman,0.9245604600530667
+40,MCAR (disperso),Interpolación lineal,0.9170451147428157
+40,MCAR (disperso),Interpolación spline,1.1063642579963235
+40,MCAR (disperso),Media móvil lineal ponderada,1.0258337515572749
+40,MCAR (disperso),Media móvil ponderada exponencial,0.9786038759030049
+40,MCAR (disperso),Media móvil simple,1.090831029724106
+40,MCAR (disperso),Representación del espacio en estados de ARIMA y suavizado de Kalman,0.6110242579921333
+40,MCAR (disperso),Siguiente observación trasladada hacia atrás,1.1585494518342636
+40,MCAR (disperso),Suavizado de Kalman en un modelo estructural,0.567800608156703
+40,MCAR (disperso),Valor aleatorio,1.880288398545778
+40,MCAR (disperso),Valor definido,1.3341502852323275
+40,MCAR (disperso),Valor mediano,1.1006534858849684
+40,MCAR (disperso),Valor medio,1.08949865412973
+40,MCAR (disperso),Valor modal,2.5158050507407834
+40,MCAR (disperso),Última observación trasladada hacia adelante,1.1495958719394455
+10,MCAR (en bloques),Descomposición estacional,0.5693917580023347
+10,MCAR (en bloques),División estacional,0.5644450360879512
+10,MCAR (en bloques),Interpolación de Stineman,1.1350539557918569
+10,MCAR (en bloques),Interpolación lineal,1.0946785320049117
+10,MCAR (en bloques),Interpolación spline,1.8686565489256854
+10,MCAR (en bloques),Media móvil lineal ponderada,1.1408051627469091
+10,MCAR (en bloques),Media móvil ponderada exponencial,1.1410589798441015
+10,MCAR (en bloques),Media móvil simple,1.1578900779770875
+10,MCAR (en bloques),Representación del espacio en estados de ARIMA y suavizado de Kalman,0.5684070165621888
+10,MCAR (en bloques),Siguiente observación trasladada hacia atrás,1.206043177014822
+10,MCAR (en bloques),Suavizado de Kalman en un modelo estructural,0.548221062470421
+10,MCAR (en bloques),Valor aleatorio,1.876345584081638
+10,MCAR (en bloques),Valor definido,1.3187757400248328
+10,MCAR (en bloques),Valor mediano,1.0836417371933866
+10,MCAR (en bloques),Valor medio,1.062940088464092
+10,MCAR (en bloques),Valor modal,2.596215157273769
+10,MCAR (en bloques),Última observación trasladada hacia adelante,1.1848801454548032
+25,MCAR (en bloques),Descomposición estacional,0.6413863970679481
+25,MCAR (en bloques),División estacional,0.5939170059100674
+25,MCAR (en bloques),Interpolación de Stineman,1.1477817444656127
+25,MCAR (en bloques),Interpolación lineal,1.096864702451169
+25,MCAR (en bloques),Interpolación spline,2.1609450482341255
+25,MCAR (en bloques),Media móvil lineal ponderada,1.1325318722093707
+25,MCAR (en bloques),Media móvil ponderada exponencial,1.1411472971325698
+25,MCAR (en bloques),Media móvil simple,1.1436165655888157
+25,MCAR (en bloques),Representación del espacio en estados de ARIMA y suavizado de Kalman,0.5883102131556144
+25,MCAR (en bloques),Siguiente observación trasladada hacia atrás,1.2305160821564067
+25,MCAR (en bloques),Suavizado de Kalman en un modelo estructural,0.5661314227437797
+25,MCAR (en bloques),Valor aleatorio,1.9210097830388455
+25,MCAR (en bloques),Valor definido,1.3183118446329816
+25,MCAR (en bloques),Valor mediano,1.0913018408613582
+25,MCAR (en bloques),Valor medio,1.075190232139863
+25,MCAR (en bloques),Valor modal,2.5663767536862063
+25,MCAR (en bloques),Última observación trasladada hacia adelante,1.1793156587446636
+40,MCAR (en bloques),Descomposición estacional,0.7982193049019538
+40,MCAR (en bloques),División estacional,0.6335506298114276
+40,MCAR (en bloques),Interpolación de Stineman,1.1770091158871367
+40,MCAR (en bloques),Interpolación lineal,1.1139258518346087
+40,MCAR (en bloques),Interpolación spline,2.6665114845966125
+40,MCAR (en bloques),Media móvil lineal ponderada,1.1362475995507644
+40,MCAR (en bloques),Media móvil ponderada exponencial,1.15370862029991
+40,MCAR (en bloques),Media móvil simple,1.1426322830260072
+40,MCAR (en bloques),Representación del espacio en estados de ARIMA y suavizado de Kalman,0.6287033796394675
+40,MCAR (en bloques),Siguiente observación trasladada hacia atrás,1.246325782081382
+40,MCAR (en bloques),Suavizado de Kalman en un modelo estructural,0.5765396294823428
+40,MCAR (en bloques),Valor aleatorio,1.8747819239149541
+40,MCAR (en bloques),Valor definido,1.337955742686856
+40,MCAR (en bloques),Valor mediano,1.1015172661241526
+40,MCAR (en bloques),Valor medio,1.0792434069960095
+40,MCAR (en bloques),Valor modal,2.586920601277687
+40,MCAR (en bloques),Última observación trasladada hacia adelante,1.217040283711598
+10,MNAR,Descomposición estacional,0.7695814728072256
+10,MNAR,División estacional,0.8174790913811492
+10,MNAR,Interpolación de Stineman,1.1127993864572268
+10,MNAR,Interpolación lineal,1.1024520176359007
+10,MNAR,Interpolación spline,1.1476589196280995
+10,MNAR,Media móvil lineal ponderada,1.3286966356434637
+10,MNAR,Media móvil ponderada exponencial,1.2541296153777426
+10,MNAR,Media móvil simple,1.4100627904797154
+10,MNAR,Representación del espacio en estados de ARIMA y suavizado de Kalman,0.775409525448811
+10,MNAR,Siguiente observación trasladada hacia atrás,1.4096527574281335
+10,MNAR,Suavizado de Kalman en un modelo estructural,0.7804727735060625
+10,MNAR,Valor aleatorio,1.9968285045383487
+10,MNAR,Valor definido,2.1337345199275704
+10,MNAR,Valor mediano,1.714395598834268
+10,MNAR,Valor medio,1.5965053106898768
+10,MNAR,Valor modal,3.5764054392811
+10,MNAR,Última observación trasladada hacia adelante,1.2276434968021164
+25,MNAR,Descomposición estacional,0.870440302630951
+25,MNAR,División estacional,0.8050317568217353
+25,MNAR,Interpolación de Stineman,1.2069773809076927
+25,MNAR,Interpolación lineal,1.2055964957397596
+25,MNAR,Interpolación spline,1.2306649331366346
+25,MNAR,Media móvil lineal ponderada,1.3520594463014315
+25,MNAR,Media móvil ponderada exponencial,1.3044997635344258
+25,MNAR,Media móvil simple,1.4061848989513732
+25,MNAR,Representación del espacio en estados de ARIMA y suavizado de Kalman,0.7208697569534012
+25,MNAR,Siguiente observación trasladada hacia atrás,1.423566598016528
+25,MNAR,Suavizado de Kalman en un modelo estructural,0.7204453909631234
+25,MNAR,Valor aleatorio,1.9371348552753453
+25,MNAR,Valor definido,1.946040946480473
+25,MNAR,Valor mediano,1.6384351985224301
+25,MNAR,Valor medio,1.5523925327529449
+25,MNAR,Valor modal,3.368960573369557
+25,MNAR,Última observación trasladada hacia adelante,1.3185103961730775
+40,MNAR,Descomposición estacional,1.0412046609302417
+40,MNAR,División estacional,0.8453903771717725
+40,MNAR,Interpolación de Stineman,1.2915504461932772
+40,MNAR,Interpolación lineal,1.2877809013235684
+40,MNAR,Interpolación spline,1.3872206760728674
+40,MNAR,Media móvil lineal ponderada,1.3558715406199404
+40,MNAR,Media móvil ponderada exponencial,1.3337128876710254
+40,MNAR,Media móvil simple,1.3863029265372666
+40,MNAR,Representación del espacio en estados de ARIMA y suavizado de Kalman,0.7300834750651314
+40,MNAR,Siguiente observación trasladada hacia atrás,1.4528739824644075
+40,MNAR,Suavizado de Kalman en un modelo estructural,0.7275704341148538
+40,MNAR,Valor aleatorio,1.874197544277978
+40,MNAR,Valor definido,1.7887923921912876
+40,MNAR,Valor mediano,1.5744679337705814
+40,MNAR,Valor medio,1.5318396911996623
+40,MNAR,Valor modal,3.1924558569190333
+40,MNAR,Última observación trasladada hacia adelante,1.3511260230788922
