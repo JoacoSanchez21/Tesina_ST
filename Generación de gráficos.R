@@ -14,6 +14,10 @@ etiquetas_mec <- c(
 )
 orden_mec <- c("MCAR\n(disperso)", "MCAR\n(en bloques)", "MAR", "MNAR")
 
+archivos <- list.files(dir_res, pattern = "^resultados_.*\\.rds$",
+                       recursive = TRUE, full.names = TRUE)
+#-------------------------------------------------------------------------------
+#Gráficos de calor para evaluar calidad de imputación
 lim_color    <- c(0.4, 2.0)
 umbral_texto <- 1.7
 
@@ -62,8 +66,6 @@ leer_escenario <- function(f) {
               N_Iteraciones, RMSE_Imp)
 }
 
-archivos <- list.files(dir_res, pattern = "^resultados_.*\\.rds$",
-                       recursive = TRUE, full.names = TRUE)
 imp <- map(archivos, leer_escenario) %>% bind_rows() %>%
   mutate(
     mecanismo = coalesce(unname(etiquetas_mec[mec_cod]), mec_cod),
@@ -104,9 +106,7 @@ mapa_imputacion <- function(p) {
     ) +
     facet_grid(familia ~ ., scales = "free_y", space = "free_y") +
     scale_x_discrete(position = "top") +
-    labs(x = NULL, y = NULL,
-         caption = sprintf(paste("El contorno negro indica el menor RMSE de cada mecanismo;\n",
-                                 "los valores \u2265 2,0 se muestran con el color máximo."), p)) +
+    labs(x = NULL, y = NULL) +
     theme_minimal(base_size = 10) +
     theme(
       panel.grid      = element_blank(),
@@ -119,17 +119,12 @@ mapa_imputacion <- function(p) {
 
 dir.create(dir_fig, showWarnings = FALSE)
 for (p in c(10, 25, 40)) {
-  ggsave(file.path(dir_fig, sprintf("fig_imputacion_calor_%02d.png", p)),
+  ggsave(file.path(dir_fig, sprintf("fig_imputacion_%02d.png", p)),
          mapa_imputacion(p), width = 7.5, height = 6.5, dpi = 300)
 }
 
-imp %>%
-  transmute(pct, mecanismo = str_replace(as.character(mecanismo), "\n", " "),
-            Metodo, RMSE_Imp) %>%
-  write_csv(file.path(dir_fig, "rmse_imputacion_resumen.csv"))
-
-
 #-------------------------------------------------------------------------------
+#Gráficos para evaluar desempeño del pronóstico
 archivo_base <- file.path(dir_res, "evaluacion_pronosticos.rds")
 
 etiq_metodo <- c(
@@ -212,42 +207,49 @@ fig <- function(mod) {
       is.finite(RMSE_Pro)
     )
   
-  # Referencia con la serie completa del modelo seleccionado
+  etiqueta_base <- paste("Pronóstico con la serie completa")
+  
   base_mod <- base %>%
-    filter(modelo == mod)
+    filter(modelo == mod) %>%
+    mutate(serie_leyenda = etiqueta_base)
   
   color_mod <- if (mod == "ARIMA") "#1f78b4" else "#e31a1c"
   
+  pal_fig <- c(
+    pal,
+    setNames(color_mod, etiqueta_base)
+  )
+  
   ggplot(d, aes(h, group = metodo_corto)) +
     
-    # Única línea de referencia: serie completa del modelo
     geom_line(
       data = base_mod,
-      aes(x = h, y = RMSE_base, group = 1),
+      aes(
+        x = h, y = RMSE_base,
+        colour = serie_leyenda,
+        group = 1
+      ),
       inherit.aes = FALSE,
-      colour = color_mod,
       linetype = "dashed",
       linewidth = 0.5
     ) +
     
     geom_point(
       data = base_mod,
-      aes(x = h, y = RMSE_base),
+      aes(x = h, y = RMSE_base, colour = serie_leyenda),
       inherit.aes = FALSE,
-      colour = color_mod,
       shape = 1,
-      size = 1.6
+      size = 1.6,
+      show.legend = FALSE
     ) +
     
-    # Métodos de imputación no destacados
     geom_line(
       data = filter(d, !destacado),
       aes(y = RMSE_Pro),
       colour = "grey75",
       linewidth = 0.4
     ) +
-    
-    # Métodos destacados y Prophet sin imputar
+
     geom_line(
       data = filter(d, destacado),
       aes(y = RMSE_Pro, colour = metodo_corto),
@@ -263,28 +265,20 @@ fig <- function(mod) {
     facet_grid(mecanismo ~ pct_lab) +
     
     scale_x_continuous(
-      breaks = sort(unique(d$h))
-    ) +
+      breaks = sort(unique(d$h)
+      )) +
     
     scale_y_continuous(labels = coma) +
     
     scale_colour_manual(
-      values = pal,
-      breaks = names(pal)
+      values = pal_fig,
+      breaks = c(names(pal), etiqueta_base)
     ) +
     
     labs(
       x = "Horizonte de pronóstico (meses)",
       y = "RMSE de pronóstico",
-      colour = NULL,
-      caption = str_wrap(
-        paste0(
-          "Líneas continuas: métodos de imputación y Prophet ajustado sin imputar. ",
-          "Línea punteada: pronóstico de ", mod, " con la serie completa. ",
-          "En gris, el resto de los métodos de imputación."
-        ),
-        width = 110
-      )
+      colour = NULL
     ) +
     
     tema +
@@ -338,12 +332,19 @@ gC <- ggplot(
   d_c,
   aes(h, RMSE, colour = modelo, group = modelo)
 ) +
-  
+  geom_line(
+    aes(linetype = "Con faltantes"),
+    linewidth = 0.9
+  ) +
   geom_line(
     data = base_line,
-    aes(h, RMSE, colour = modelo, group = modelo),
+    aes(
+      h, RMSE,
+      colour = modelo,
+      linetype = "Serie completa",
+      group = modelo
+    ),
     inherit.aes = FALSE,
-    linetype = "dashed",
     linewidth = 0.5
   ) +
   
@@ -354,8 +355,6 @@ gC <- ggplot(
     shape = 1,
     size = 1.6
   ) +
-  
-  geom_line(linewidth = 0.9) +
   
   geom_point(size = 1.6) +
   
@@ -382,11 +381,7 @@ gC <- ggplot(
     x = "Horizonte de pronóstico (meses)",
     y = "RMSE de pronóstico",
     colour = NULL,
-    caption = paste(
-      "Líneas continuas: mejor método de imputación para ARIMA y ETS en cada escenario; Prophet ajustado sin imputar.",
-      "Líneas discontinuas: pronósticos de cada modelo utilizando la serie completa.",
-      sep = "\n"
-    )
+    linetype = NULL
   ) +
   
   tema +
@@ -402,6 +397,111 @@ gC <- ggplot(
 
 ggsave(file.path(dir_fig, "figC_prophet_vs_mejor.png"), gC, width = 8.5, height = 8.5, dpi = 300)
 
-res %>%
-  transmute(pct, mecanismo = as.character(mecanismo), modelo, Metodo, h, RMSE_Pro, RMSE_base) %>%
-  write_csv(file.path(dir_fig, "rmse_pronostico_resumen.csv"))
+#-------------------------------------------------------------------------------
+# Coeficientes de Spearman
+
+leer_escenario <- function(f) {
+  m <- str_match(basename(f), "^resultados_(.+)_(\\d+)\\.rds$")
+  if (is.na(m[1, 1])) return(NULL)
+  
+  r <- readRDS(f)
+  
+  imp <- as_tibble(r$Resumen_Imputacion) %>%
+    transmute(Metodo = as.character(Metodo), RMSE_Imp)
+  
+  pro <- as_tibble(r$Resumen_Pronostico) %>%
+    filter(Modelo %in% c("ARIMA", "ETS")) %>%
+    transmute(Metodo = as.character(Metodo), modelo = as.character(Modelo),
+              h = as.integer(Horizonte), RMSE_Pro)
+  
+  inner_join(imp, pro, by = "Metodo") %>%
+    mutate(mec_cod = m[1, 2], pct = as.integer(m[1, 3]), .before = 1)
+}
+
+res <- map(archivos , leer_escenario) %>% bind_rows()%>%
+  mutate(
+    mecanismo = coalesce(unname(etiquetas_mec[mec_cod]), mec_cod),
+    mecanismo = factor(mecanismo, levels = unique(c(orden_mec, mecanismo)))
+  )
+
+rankings <- res %>%
+  group_by(mecanismo, pct, modelo, h) %>%
+  mutate(
+    rango_imp = rank(RMSE_Imp, ties.method = "average"),
+    rango_pro = rank(RMSE_Pro, ties.method = "average")
+  ) %>%
+  ungroup() %>%
+  arrange(mecanismo, pct, modelo, h, rango_imp) %>%
+  select(mecanismo, pct, modelo, h, Metodo, RMSE_Imp, rango_imp, RMSE_Pro, rango_pro)
+
+tops <- rankings %>%
+  group_by(mecanismo, pct, modelo, h) %>%
+  summarise(
+    n_metodos      = n(),
+    top_imputacion = list(Metodo[order(RMSE_Imp)]),
+    top_pronostico = list(Metodo[order(RMSE_Pro)]),
+    .groups = "drop"
+  )
+
+spearman <- rankings %>%
+  group_by(mecanismo, pct, modelo, h) %>%
+  summarise(
+    n_metodos = n(),
+    rho       = cor(rango_imp, rango_pro, method = "spearman"),
+    mejor_imp = Metodo[which.min(RMSE_Imp)],
+    mejor_pro = Metodo[which.min(RMSE_Pro)],
+    .groups = "drop"
+  )
+
+saveRDS(list(rankings = rankings, tops = tops, spearman = spearman),
+        file.path(dir_res, "rankings_spearman.rds"))
+
+mean(spearman$rho)
+
+lim_rho      <- c(0, 1)   
+umbral_texto <- 0.83
+digitos      <- 3
+
+sp <- readRDS(file.path(dir_res, "rankings_spearman.rds"))$spearman
+
+sp <- sp %>%
+  mutate(
+    mecanismo = coalesce(unname(etiquetas_mec[as.character(mecanismo)]), as.character(mecanismo)),
+    mecanismo = factor(mecanismo, levels = rev(unique(c(orden_mec, mecanismo)))),
+    modelo    = factor(modelo, levels = c("ARIMA", "ETS")),
+    h_lab     = factor(paste0("h = ", h), levels = paste0("h = ", sort(unique(h))))
+  )
+
+fmt <- function(x) formatC(x, format = "f", digits = digitos, decimal.mark = ",")
+
+mapa_spearman <- function(p) {
+  d <- filter(sp, pct == p)
+  
+  ggplot(d, aes(h_lab, mecanismo, fill = rho)) +
+    geom_tile(colour = "white", linewidth = 0.6) +
+    geom_text(aes(label = fmt(rho), colour = abs(rho) > umbral_texto), size = 3) +
+    scale_colour_manual(values = c("FALSE" = "black", "TRUE" = "white"), guide = "none") +
+    scale_fill_distiller(
+      palette = "RdBu", direction = 1, limits = lim_rho,
+      breaks = c(-1, -0.5, 0, 0.5, 1), labels = c("-1", "-0,5", "0", "0,5", "1"),
+      name = "Spearman"
+    ) +
+    facet_grid(. ~ modelo) +
+    scale_x_discrete(position = "top") +
+    labs(x = NULL, y = NULL) +
+    theme_minimal(base_size = 10) +
+    theme(
+      panel.grid      = element_blank(),
+      strip.text.x    = element_text(face = "bold"),
+      strip.placement = "outside",
+      axis.text.x     = element_text(face = "bold"),
+      plot.caption    = element_text(hjust = 0, size = 8),
+      legend.position = "right"
+    )
+}
+
+dir.create(dir_fig, showWarnings = FALSE)
+for (p in c(10, 25, 40)) {
+  ggsave(file.path(dir_fig, sprintf("fig_spearman%02d.png", p)),
+         mapa_spearman(p), width = 7.5, height = 3.6, dpi = 300)
+}
