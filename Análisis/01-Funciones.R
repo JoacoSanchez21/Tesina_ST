@@ -23,7 +23,7 @@ library(zoo)
 
 set.seed(123)
 
-datos <- read_csv("demanda.csv", show_col_types = FALSE) %>%
+datos <- read_csv("Datos/demanda.csv", show_col_types = FALSE) %>%
   mutate(fecha = ymd(fecha),
          anio  = year(fecha),
          mes  = month(fecha),
