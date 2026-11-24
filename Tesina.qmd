@@ -692,7 +692,7 @@ En las cuatro métricas, un valor menor indica un menor error y, por lo tanto, u
 
 ```{r}
 #Carga de datos
-datos <- read_csv("demanda.csv", show_col_types = FALSE) %>%
+datos <- read_csv("Datos/demanda.csv", show_col_types = FALSE) %>%
   mutate(fecha = ymd(fecha),
          anio  = year(fecha),
          mes  = month(fecha),
@@ -1320,13 +1320,10 @@ Estos resultados deben interpretarse con cautela: provienen de una única serie 
 # Anexo
 
 ```{r}
-writeLines(
-  capture.output(sessionInfo()),
-  "sessionInfo.txt"
-)
+renv::snapshot()
 ```
 
-A continuación, se incluye el link al repositorio de github, donde se encuentra todo el código utilizado, la versión de los paquetes y de R (en el archivo "sessionInfo.txt") y la base de datos. Adicionalmente, en la @tbl-anexo se presentan las funciones utilizadas para cada método de imputación.
+A continuación, se incluye el link al repositorio de github, donde se encuentra todo el código utilizado y la base de datos. Adicionalmente, en la @tbl-anexo se presentan las funciones utilizadas para cada método de imputación.
 
 ```{r}
 tabla_imputadores <- data.frame(
