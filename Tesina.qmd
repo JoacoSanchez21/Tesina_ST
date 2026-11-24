@@ -46,21 +46,13 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE, fig.align 
 # Librerías
 library(dplyr)
 library(forecast)
-library(ggfortify)
 library(ggplot2)
 library(ggrepel)
-library(gridExtra)
-library(gt)
 library(kableExtra)
 library(knitr)
 library(lubridate)
-library(purrr)
 library(readr)
-library(scales)
-library(stringr)
 library(tidyr)
-library(tseries)
-library(zoo)
 
 #Funciones
 resaltar_min <- function(x, x_num) {
@@ -847,6 +839,13 @@ grafico_final_centrado <- p +
                   segment.color = NA,   
                   show.legend = FALSE,
                   hjust = 0.5) +      
+  scale_x_continuous(
+  breaks = seq(0, 11/12, by = 1/12),
+  labels = c(
+    "Ene", "Feb", "Mar", "Abr", "May", "Jun",
+    "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"
+  )
+) +
   coord_cartesian(xlim = c(-1/12, 1), expand = FALSE, clip = "off") + 
   theme(plot.margin = margin(t = 10, r = 15, b = 10, l = 15)) 
 
@@ -856,10 +855,16 @@ grafico_final_centrado
 En la @fig-grafico5 se observa que la serie tiene un patrón claramente estacional, donde en cada año se ven picos y valles recurrentes, consistentes con una demanda energética influenciada por factores climáticos, como el uso de sistemas de climatización durante períodos de temperaturas extremas. La amplitud de las fluctuaciones estacionales varía a lo largo del período, observándose valores mayores en los años más recientes.
 
 ```{r fig-grafico6, fig.cap= "Gráfico estacional de la serie por mes", fig.height=3, fig.width=5.5}
-ggmonthplot(serie_train)+
-  labs(x = "Mes",
-       y = "Demanda (miles de GWh)") +
-  ggtitle(NULL) +                     
+ggmonthplot(
+  serie_train,
+  labels = c("Ene", "Feb", "Mar", "Abr", "May", "Jun",
+             "Jul", "Ago", "Sep", "Oct", "Nov", "Dic")
+) +
+  labs(
+    x = "Mes",
+    y = "Demanda (miles de GWh)"
+  ) +
+  ggtitle(NULL) +
   theme_minimal(base_size = 14) +
   theme(
     plot.title = element_text(face = "bold", hjust = 0.5, size = 16),
