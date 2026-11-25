@@ -55,9 +55,18 @@ library(readr)
 library(tidyr)
 
 #Funciones
+formatear_num <- function(x, digits = 3) {
+  formatC(
+    x,
+    format = "f",
+    digits = digits,
+    decimal.mark = ","
+  )
+}
+
 resaltar_min <- function(x, x_num) {
   cell_spec(
-    sprintf("%.3f", x),
+    formatear_num(x),
     bold = (x_num == min(x_num, na.rm = TRUE)),
     color = ifelse(x_num == min(x_num, na.rm = TRUE), "#1E90FF", "black"),
     format = "latex"
@@ -330,7 +339,7 @@ Una de las principales características de este método es su naturaleza determi
 
 Este método presenta importantes limitaciones, ya que la imputación por un valor constante tiende a distorsionar la distribución de los datos, dado que introduce una concentración artificial de valores en el punto elegido. Esto puede afectar la estimación de parámetros, reducir la variabilidad de la serie y generar sesgos en el análisis. Además, al no considerar la dependencia temporal, los valores imputados pueden resultar inconsistentes con la dinámica de la serie. Por este motivo, la imputación por valor definido suele utilizarse en situaciones muy específicas o como punto de comparación, más que como una solución adecuada para preservar la información temporal de la serie.
 
-En el caso de aplicación, el valor arbitrario elegido será 10. Es decir, al imputar usando este método, a cada valor faltante se le asignará el valor 10.
+En el caso de aplicación, el valor arbitrario elegido fue 10. Es decir, al imputar usando este método, a cada valor faltante se le asignó el valor 10.
 
 ### Valor medio
 
@@ -894,29 +903,29 @@ Una vez generados los escenarios, se aplicaron los métodos de imputación consi
 
 Luego, sobre las series imputadas se ajustaron los modelos ARIMA/SARIMA y ETS, siguiendo el enfoque *forecast-after-imputation*. Adicionalmente, se ajustó Prophet directamente sobre la serie con faltantes, sin imputación previa, por lo que se incorporó como un modelo de referencia (*benchmark*) externo a dicho esquema, que permitió comparar la estrategia de imputar y luego pronosticar con una alternativa capaz de generar predicciones a partir de series incompletas. Los pronósticos se generaron para horizontes de $h=3, 6\text{ y }12$ períodos y, para cada $h$, el error se calculó sobre los primeros $h$ meses del conjunto de prueba. También se obtuvieron pronósticos de los tres modelos con la serie completa, cuyos resultados se emplearon como línea base. El desempeño predictivo se evaluó comparando los valores pronosticados con las observaciones del conjunto de prueba mediante las mismas métricas utilizadas para la imputación, lo que permitió analizar tanto la capacidad de cada método para reconstruir los valores faltantes como el impacto de las imputaciones sobre los pronósticos posteriores.
 
-El ajuste de los modelos ARIMA/SARIMA se realizó con la función `auto.arima()` y el de los modelos ETS con la función `ets()`, ambas del paquete `forecast` de R, que seleccionan automáticamente una especificación a partir de un conjunto de alternativas mediante un criterio de información. En el caso de `auto.arima()`, la búsqueda consideró distintos órdenes autorregresivos y de media móvil, estacionales y no estacionales, y la necesidad de diferenciación. Por su parte, `ets()` seleccionó la combinación de componentes de error, tendencia y estacionalidad que mejor se ajustó a los datos.
+El ajuste de los modelos ARIMA/SARIMA se realizó con la función `auto.arima()` y el de los modelos ETS con la función `ets()`, ambas del paquete `forecast` de R, que seleccionan automáticamente una especificación a partir de un conjunto de alternativas mediante un criterio de información. En el caso de `auto.arima()`, la búsqueda consideró distintos órdenes autorregresivos y de media móvil, estacionales y no estacionales, y la necesidad de diferenciación. Por su parte, `ets()` seleccionó la combinación de componentes de error, tendencia y estacionalidad que mejor se ajustó a los datos. En cada escenario se realizaron 100 réplicas; la réplica $i$ utilizó la semilla $123+i$, de modo que los resultados son reproducibles.
 
-El procedimiento completo puede resumirse en las siguientes etapas:
+El procedimiento propuesto, aplicable a otras series temporales, puede resumirse en las siguientes etapas; su implementación en este trabajo se describió en los párrafos anteriores:
 
-1 - Selección de la serie temporal. Se selecciona una serie temporal univariada completa, que servirá como referencia para la generación de los escenarios experimentales.
+1 - Selección de la serie temporal. Se selecciona una serie temporal univariada completa, que sirve como referencia para la generación de los escenarios experimentales.
 
-2 - Análisis exploratorio de la serie. Se estudian las principales características de la serie, incluyendo tendencia, estacionalidad, autocorrelación y posibles valores atípicos. Asimismo, se define la partición entre conjunto de entrenamiento y conjunto de prueba.
+2 - Análisis exploratorio de la serie. Se estudian sus principales características (tendencia, estacionalidad, autocorrelación y posibles valores atípicos) y se define la partición entre conjunto de entrenamiento y conjunto de prueba.
 
- 3 - Línea base. Previo a la introducción de faltantes, se ajustan los modelos ARIMA/SARIMA, ETS y Prophet sobre la serie completa y se obtienen los pronósticos para los horizontes de 3, 6 y 12 meses.
+3 - Línea base. Previo a la introducción de faltantes, se ajustan los modelos ARIMA/SARIMA, ETS y Prophet sobre la serie completa y se obtienen los pronósticos para los horizontes de interés.
 
-4 - Generación de datos faltantes. Se introducen valores faltantes de forma artificial sobre el conjunto de entrenamiento, considerando distintos porcentajes y mecanismos de generación de faltantes.
+4 - Generación de datos faltantes. Se introducen valores faltantes de forma artificial en el conjunto de entrenamiento, con distintos porcentajes y mecanismos de ausencia.
 
-5 - Aplicación de los métodos de imputación. Se imputan las observaciones faltantes mediante las técnicas consideradas en el estudio.
+5 - Aplicación de los métodos de imputación. Se imputan las observaciones faltantes mediante las técnicas consideradas.
 
-6 - Evaluación de la imputación. Se comparan los valores imputados con los valores originales mediante las métricas RMSE, MAE y MAPE.
+6 - Evaluación de la imputación. Se comparan los valores imputados con los originales mediante RMSE, MAE y MAPE.
 
- 7 - Ajuste de los modelos de pronóstico. Se ajustan ARIMA/SARIMA y ETS sobre las series imputadas, y Prophet sobre la serie con datos faltantes.
+7 - Ajuste de los modelos de pronóstico. Se ajustan ARIMA/SARIMA y ETS sobre las series imputadas, y Prophet sobre la serie con datos faltantes.
 
-8 - Generación de pronósticos. Se obtienen predicciones para horizontes de $h=3, 6\text{ y }12$.
+8 - Generación de pronósticos. Se obtienen las predicciones para los horizontes considerados.
 
-9 - Evaluación del pronóstico. Se comparan los pronósticos con las observaciones del conjunto de prueba utilizando las métricas RMSE, MAE y MAPE.
+9 - Evaluación del pronóstico. Se comparan los pronósticos con las observaciones del conjunto de prueba mediante RMSE, MAE y MAPE.
 
-10 - Comparación de resultados. Se analizan conjuntamente los errores de imputación y de pronóstico para determinar el efecto que tienen los distintos métodos de imputación sobre el desempeño predictivo de cada modelo.
+10 - Comparación de resultados. Se analizan conjuntamente los errores de imputación y de pronóstico, y su concordancia, para determinar el efecto de los métodos de imputación sobre el desempeño predictivo de cada modelo.
 
 ### MCAR (Disperso)
 
@@ -936,9 +945,11 @@ La probabilidad de eliminación aumentó con el valor de la propia observación.
 
 ## Desempeño predictivo con la serie completa (Línea base)
 
-Antes de analizar los escenarios con datos faltantes, se evaluó el desempeño predictivo de los modelos ajustados sobre la serie de entrenamiento completa (enero de 2010 a diciembre de 2024), sin valores faltantes ni imputación. Estos resultados constituyen la línea base con la que se compara el desempeño obtenido en cada escenario. Dado que el procedimiento no incluye componentes aleatorios, se realizó una única vez. Los pronósticos se generaron a 12 meses y, para cada $h$, el error se calculó sobre los primeros $h$ meses de 2025.
+Antes de analizar los escenarios con datos faltantes, se evaluó el desempeño predictivo de los modelos ajustados sobre la serie de entrenamiento completa (enero de 2010 a diciembre de 2024), sin valores faltantes ni imputación. Estos resultados se presentan en la @tbl-prono y constituyen la línea base con la que se compara el desempeño obtenido en cada escenario. Dado que el procedimiento no incluye componentes aleatorios, se realizó una única vez. Los pronósticos se generaron a 12 meses y, para cada $h$, el error se calculó sobre los primeros $h$ meses de 2025. 
 
-```{r tablaprono}
+```{r}
+#| label: tbl-prono
+#| echo: false
 #| tbl-cap: "Desempeño de los modelos de pronóstico según horizonte y métricas de error utilizando la serie completa (línea base)."
 #| tbl-pos: "H"
 
@@ -959,9 +970,8 @@ tabla <- tabla %>%
 
 tabla <- tabla %>%
   mutate(
-    across(-Modelo, ~ sprintf("%.3f", .x))
+    across(-Modelo, ~ formatear_num(.x))
   )
-
 tabla %>%
   kable(
     format = "latex",
@@ -999,6 +1009,8 @@ Prophet obtuvo el menor RMSE con $h=3$ (0,804), mientras que en el caso de $h=6$
 En los tres modelos el RMSE disminuye al aumentar $h$. Como las ventanas están anidadas, este descenso no indica un mejor pronóstico a mayor plazo, sino que los errores se concentran en los primeros meses de 2025.
 
 ## Resultados
+
+Las tablas con los resultados de la imputación y del pronóstico posterior a la imputación se presentan en el [Anexo](#sec-anexo).
 
 ### Calidad de la imputación
 
@@ -1256,7 +1268,7 @@ kable(resumen_ets,
   )
 ``` 
 
-La comparación de los resultados muestra que no existe una correspondencia sistemática entre el método con menor error de imputación y el que alcanza el mejor desempeño predictivo: considerando las 72 combinaciones (doce escenarios, los dos modelos y los tres horizontes), el método con menor error de imputación coincide con el de mejor desempeño predictivo en 25 de ellas y queda entre los tres mejores en 55. En términos de imputación, el suavizado de Kalman en un modelo estructural presentó el menor RMSE en 9 de los 12 escenarios, mientras que la descomposición estacional lo hizo únicamente con 10 % de faltantes bajo los tres escenarios (MCAR, MAR y MNAR).
+La comparación de los resultados muestra que no existe una correspondencia sistemática entre el método con menor error de imputación y el que alcanza el mejor desempeño predictivo: considerando las 72 combinaciones (doce escenarios, los dos modelos y los tres horizontes), el método con menor error de imputación coincide con el de mejor desempeño predictivo en 24 de ellas y queda entre los tres mejores en 55. En términos de imputación, el suavizado de Kalman en un modelo estructural presentó el menor RMSE en 9 de los 12 escenarios, mientras que la descomposición estacional lo hizo únicamente con 10 % de faltantes bajo los tres escenarios (MCAR, MAR y MNAR).
 
 En cuanto al pronóstico, esta ventaja no se traslada de manera uniforme. Para $h=3$, la división estacional presentó el menor error con ARIMA en 10 de los 12 escenarios y fue, sola o en empate, la mejor con ETS en 8 de ellos. Con ARIMA y $h=6$, el suavizado de Kalman en un modelo estructural fue el mejor método en 5 de los 8 escenarios con 25 % o 40 % de faltantes, y en ningún escenario con 10 %. Por su parte, LOCF resulta competitivo con ETS en el corto plazo: fue el método con menor error para $h=3$ en cuatro escenarios (MCAR con 10 y 25 %, MAR con 10 % y MNAR con 10 %), todos con faltantes dispersos y una pérdida de información baja o moderada, y nunca con 40 % de faltantes ni con faltantes en bloques. Con MNAR, el mejor método de imputación también domina los pronósticos de ambos modelos en 1 de 6 combinaciones con el 10 % de faltantes y en 3 de 6 con 25 % y con 40 %.
 
@@ -1300,7 +1312,7 @@ En términos de imputación, los métodos que incorporan la estructura temporal 
 
 Sin embargo, no hubo coincidencia sistemática entre el ranking de imputación y el de pronóstico. Considerando las 72 combinaciones de escenario, modelo y ventana, el método con menor error de imputación fue también el de mejor pronóstico en 24 y quedó entre los tres mejores en 55. Elegirlo implicó en promedio un RMSE de pronóstico 2,9 % mayor que el del mejor método (6,4% con $h=3$ y alrededor de 1% con $h=6$ y $h=12$). La correlación de rangos de Spearman fue en general alta (entre 0,44 y 0,98) y la coincidencia aumentó con el porcentaje de faltantes (4 de 24 combinaciones con 10 %, 5 con 25 % y 15 con 40 %), pero con ETS y $h=3$ fue la más baja. Un menor error de imputación orienta la elección del método, pero no garantiza el mejor pronóstico.
 
-El mejor método dependió del modelo y de la ventana. Con ARIMA, la división estacional fue la mejor con $h=3$ en 10 de los 12 escenarios y el suavizado de Kalman estructural con 40 % de faltantes y $h=6$ y $h=12$. Con ETS, LOCF fue el mejor con h=3 bajo MCAR (10 y 25 %) y MAR (10 %), pero perdió competitividad con 40 % y con faltantes en bloques.
+El mejor método dependió del modelo y de la ventana. Con ARIMA, la división estacional fue la mejor con $h=3$ en 10 de los 12 escenarios y el suavizado de Kalman estructural con 40 % de faltantes y $h=6$ y $h=12$. Con ETS, LOCF fue el mejor con $h=3$ bajo MCAR (10 y 25 %) y MAR (10 %), pero perdió competitividad con 40 % y con faltantes en bloques.
 
 Respecto de la línea base, con $h=3$ el mejor método obtuvo un RMSE menor que el de la serie completa en 6 de los 12 escenarios con ARIMA y en 7 con ETS, y con $h=6$ y $h=12$ prácticamente nunca lo hizo, por lo que la serie completa no constituye una cota estricta. Con ARIMA, el mejor RMSE fue entre 0,94 y 1,04 veces el de la serie completa con 10 % bajo MCAR, MCAR en bloques y MAR, y entre 1,04 y 1,31 con 40 %; con ETS el deterioro fue menor. Bajo MNAR fue mayor en todos los casos.
 
@@ -1317,13 +1329,17 @@ Estos resultados deben interpretarse con cautela: provienen de una única serie 
 
 \newpage
 
-# Anexo
+# Anexo {#sec-anexo}
 
-```{r}
-renv::snapshot()
-```
+## Código y reproducibilidad
 
-A continuación, se incluye el link al repositorio de github, donde se encuentra todo el código utilizado y la base de datos. Adicionalmente, en la @tbl-anexo se presentan las funciones utilizadas para cada método de imputación.
+El código utilizado para el desarrollo de esta investigación se encuentra disponible en el repositorio de GitHub: <https://github.com/JoacoSanchez21/Tesis>.
+
+Los análisis se realizaron utilizando el entorno de programación R. Con el objetivo de facilitar la reproducibilidad de los resultados y mantener la consistencia de las dependencias utilizadas, se empleó el paquete `renv`, que permite registrar las versiones de las librerías utilizadas en el proyecto.
+
+Las dependencias y sus respectivas versiones se encuentran registradas en el archivo `renv.lock`, incluido en el repositorio. Esto permite reconstruir el entorno de trabajo mediante la restauración de las dependencias especificadas en dicho archivo.
+
+Adicionalmente,  en la @tbl-anexo se presentan las funciones utilizadas para cada método de imputación con su respectiva configuración. 
 
 ```{r}
 tabla_imputadores <- data.frame(
@@ -1367,7 +1383,7 @@ tabla_imputadores <- data.frame(
   ),
   `Argumentos especificados` = c(
     "ninguno",
-    "fill 10",
+    "fill = 10",
     "option = \"mean\"",
     "option = \"median\"",
     "option = \"mode\"",
@@ -1625,7 +1641,7 @@ tabla <- data.frame(
 )
 
 tabla %>%
-  mutate(across(where(is.numeric), ~ sprintf("%.3f", .x))) %>%
+  mutate(across(where(is.numeric), ~ formatear_num(.x))) %>%
   kable(
     format = "latex",
     escape = FALSE,
@@ -1868,7 +1884,7 @@ tabla <- data.frame(
 )
 
 tabla %>%
-  mutate(across(where(is.numeric), ~ sprintf("%.3f", .x))) %>%
+  mutate(across(where(is.numeric), ~ formatear_num(.x))) %>%
   kable(
     format = "latex",
     escape = FALSE,
@@ -2111,7 +2127,7 @@ tabla <- data.frame(
 )
 
 tabla %>%
-  mutate(across(where(is.numeric), ~ sprintf("%.3f", .x))) %>%
+  mutate(across(where(is.numeric), ~ formatear_num(.x))) %>%
   kable(
     format = "latex",
     escape = FALSE,
@@ -2356,7 +2372,7 @@ tabla <- data.frame(
 )
 
 tabla %>%
-  mutate(across(where(is.numeric), ~ sprintf("%.3f", .x))) %>%
+  mutate(across(where(is.numeric), ~ formatear_num(.x))) %>%
   kable(
     format = "latex",
     escape = FALSE,
@@ -2599,7 +2615,7 @@ tabla <- data.frame(
 )
 
 tabla %>%
-  mutate(across(where(is.numeric), ~ sprintf("%.3f", .x))) %>%
+  mutate(across(where(is.numeric), ~ formatear_num(.x))) %>%
   kable(
     format = "latex",
     escape = FALSE,
@@ -2842,7 +2858,7 @@ tabla <- data.frame(
 )
 
 tabla %>%
-  mutate(across(where(is.numeric), ~ sprintf("%.3f", .x))) %>%
+  mutate(across(where(is.numeric), ~ formatear_num(.x))) %>%
   kable(
     format = "latex",
     escape = FALSE,
@@ -3088,7 +3104,7 @@ tabla <- data.frame(
 )
 
 tabla %>%
-  mutate(across(where(is.numeric), ~ sprintf("%.3f", .x))) %>%
+  mutate(across(where(is.numeric), ~ formatear_num(.x))) %>%
   kable(
     format = "latex",
     escape = FALSE,
@@ -3331,7 +3347,7 @@ tabla <- data.frame(
 )
 
 tabla %>%
-  mutate(across(where(is.numeric), ~ sprintf("%.3f", .x))) %>%
+  mutate(across(where(is.numeric), ~ formatear_num(.x))) %>%
   kable(
     format = "latex",
     escape = FALSE,
@@ -3574,7 +3590,7 @@ tabla <- data.frame(
 )
 
 tabla %>%
-  mutate(across(where(is.numeric), ~ sprintf("%.3f", .x))) %>%
+  mutate(across(where(is.numeric), ~ formatear_num(.x))) %>%
   kable(
     format = "latex",
     escape = FALSE,
@@ -3820,7 +3836,7 @@ tabla <- data.frame(
 )
 
 tabla %>%
-  mutate(across(where(is.numeric), ~ sprintf("%.3f", .x))) %>%
+  mutate(across(where(is.numeric), ~ formatear_num(.x))) %>%
   kable(
     format = "latex",
     escape = FALSE,
@@ -4063,7 +4079,7 @@ tabla <- data.frame(
 )
 
 tabla %>%
-  mutate(across(where(is.numeric), ~ sprintf("%.3f", .x))) %>%
+  mutate(across(where(is.numeric), ~ formatear_num(.x))) %>%
   kable(
     format = "latex",
     escape = FALSE,
@@ -4306,7 +4322,7 @@ tabla <- data.frame(
 )
 
 tabla %>%
-  mutate(across(where(is.numeric), ~ sprintf("%.3f", .x))) %>%
+  mutate(across(where(is.numeric), ~ formatear_num(.x))) %>%
   kable(
     format = "latex",
     escape = FALSE,
