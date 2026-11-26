@@ -38,7 +38,7 @@ execute:
 \begin{titlepage}
 \centering
 \vspace*{0.5cm}
-\includegraphics[width=0.4\textwidth]{../logounr.png}\par
+\includegraphics[width=0.4\textwidth]{../Recursos/logounr.png} \par
 \vspace{0.5cm}
 {\large UNIVERSIDAD NACIONAL DE ROSARIO \par}
 {\large Facultad de Ciencias Económicas y Estadística \par}
