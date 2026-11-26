@@ -95,8 +95,8 @@ El desarrollo del trabajo comprende las siguientes etapas:
 1. **Clonar el repositorio**
 
    ```bash
-   git clone [URL_DEL_REPOSITORIO]
-   cd [Tesina_ST]
+   git clone https://github.com/JoacoSanchez21/Tesina_ST.git
+   cd Tesina_ST
    ```
 
 2. **Preparar el entorno de trabajo**
