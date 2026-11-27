@@ -26,7 +26,7 @@ format:
           \renewcommand{\headrulewidth}{0pt}
     geometry: margin=2.5cm
 
-bibliography: referencias2.bib
+bibliography: Referencias/referencias.bib
 csl: https://www.zotero.org/styles/apa
 
 reference-location: document
@@ -77,7 +77,7 @@ resaltar_min <- function(x, x_num) {
 \begin{titlepage}
 \centering
 \vspace*{0.5cm}
-\includegraphics[width=0.4\textwidth]{logounr.png} \par
+\includegraphics[width=0.4\textwidth]{Recursos/logounr.png} \par
 \vspace{0.5cm}
 {\large UNIVERSIDAD NACIONAL DE ROSARIO \par}
 {\large Facultad de Ciencias Económicas y Estadística \par}
@@ -104,13 +104,25 @@ resaltar_min <- function(x, x_num) {
 
 ## Agradecimientos {.unnumbered .unlisted}
 
+En primer lugar, quiero agradecer a mis papás y a mi hermano, por el acompañamiento incondicional a lo largo de toda mi carrera. Por el apoyo, la confianza, la comprensión y el esfuerzo que hicieron posible que llegara hasta esta instancia, y por estar presentes en todo momento. También agradecerle a mi abuela, por todas las veces que me dijo "todo va a salir bien" antes de ir a rendir, y a mi abuelo, por las charlas de fútbol antes de ir a cursar.
+
+A mi novia, por acompañarme durante este proceso, por su paciencia, comprensión, apoyo constante y por todos los fines de semana de estudio juntos. Gracias por estar a mi lado, por alentarme en los momentos de mayor incertidumbre y por compartir conmigo tanto las alegrías como las caídas en esta etapa. 
+
+A mis amigos de la facultad, por haber compartido tantos años de cursado, mates, trabajos y experiencias. Por la ayuda mutua, las charlas, las risas y por hacer que el recorrido universitario fuera mucho más llevadero. Sin dudas, haber compartido este camino con ustedes hizo que la experiencia fuera aún más especial.
+
+A mis amigos por fuera de la facultad, por estar siempre presentes, por su compañía y por brindarme ratos de desconexión durante estos años. Gracias por comprender mis tiempos y acompañarme, cada uno a su manera, a lo largo de este recorrido.
+
+Finalmente, quiero expresar mi agradecimiento a Nanda, mi directora de tesina, por su orientación, dedicación y acompañamiento durante el desarrollo de este trabajo.
+
+A todas las personas que, de una u otra manera, formaron parte de este camino y contribuyeron a que hoy pueda cerrar esta etapa, muchas gracias.
+
 \newpage
 
 ## Resumen {.unnumbered .unlisted}
 
 Las series temporales univariadas constituyen una herramienta fundamental para el análisis y la predicción de fenómenos que evolucionan a lo largo del tiempo en múltiples áreas de aplicación. Sin embargo, en la práctica es frecuente la presencia de datos faltantes, lo que puede afectar tanto la calidad del análisis como el desempeño de los modelos predictivos. En este contexto, la imputación de valores faltantes surge como una estrategia clave para completar las series o estimar valores faltantes y permitir la aplicación de métodos de modelado y pronóstico.
 
-Este trabajo evalúa y compara 17 métodos de imputación, desde enfoques simples hasta técnicas adaptadas a la estructura temporal, considerando no solo la calidad de los valores reconstruidos sino también el desempeño de pronóstico posterior (forecast-after-imputation) con modelos ARIMA/SARIMA y ETS; Prophet, que admite series incompletas, se incorporó como modelo de referencia sin imputación. Mediante simulación sobre una serie mensual de demanda de electricidad de Argentina (2010–2025) se generaron 12 escenarios, que combinaron cuatro configuraciones de ausencia (MCAR disperso, MCAR en bloques, MAR y MNAR) con tres porcentajes de pérdida (10, 25 y 40 %), y el desempeño se evaluó con RMSE, MAE y MAPE en ventanas de 3, 6 y 12 meses, con 100 réplicas por escenario.
+Este trabajo evalúa y compara 17 métodos de imputación, desde enfoques simples hasta técnicas adaptadas a la estructura temporal, considerando no solo la calidad de los valores reconstruidos sino también el desempeño de pronóstico posterior (*forecast-after-imputation*) con modelos ARIMA/SARIMA y ETS; Prophet, que admite series incompletas, se incorporó como modelo de referencia sin imputación. Mediante simulación sobre una serie mensual de demanda de electricidad de Argentina (2010–2025) se generaron 12 escenarios, que combinaron cuatro configuraciones de ausencia (MCAR disperso, MCAR en bloques, MAR y MNAR) con tres porcentajes de pérdida (10, 25 y 40 %), y el desempeño se evaluó con RMSE, MAE y MAPE en ventanas de 3, 6 y 12 meses, con 100 réplicas por escenario.
 
 Los métodos que incorporan la estructura temporal fueron los más precisos para reconstruir los datos: el suavizado de Kalman en un modelo estructural obtuvo el menor error en 9 de los 12 escenarios y la descomposición estacional en los tres con 10 % de faltantes bajo MCAR, MAR y MNAR. Sin embargo, no hubo coincidencia sistemática entre los rankings: el mejor método de imputación fue también el de mejor pronóstico en 24 de las 72 combinaciones de escenario, modelo y ventana (4 de 24 con 10 % de faltantes, 5 con 25 % y 15 con 40 %), aunque quedó entre los tres mejores en 55, y la correlación de rangos de Spearman varió entre 0,44 y 0,98. Prophet, sin imputar, superó al mejor resultado de ETS en todos los casos y al de ARIMA en 18 de 36, sobre todo con ventanas largas y 25 % o más de faltantes.
 
@@ -317,7 +329,7 @@ La imputación suele resultar menos problemática bajo MCAR, ya que la probabili
 
 Debe tenerse en cuenta que la eficiencia de cada técnica depende del conjunto de datos. Esto significa que cada técnica funciona de manera diferente dependiendo de la estructura de cada serie temporal; en otras palabras, no existe un método único que se adapte a todos los tipos de datos. Por ello, al seleccionar un método de imputación, es necesario considerar las características específicas de la serie y el mecanismo que genera los faltantes. Por lo tanto, es necesario analizar las características específicas de la serie temporal con datos faltantes y, a partir de ese análisis, seleccionar el procedimiento de imputación que mejor se adapte a dicha estructura.
 
-A continuación, se describen los métodos de imputación que serán evaluados en cada situación.
+A continuación, se describen los métodos de imputación que se evalúan en cada situación.
 
 ### Valor aleatorio
 
@@ -509,7 +521,7 @@ Entre sus principales ventajas se destacan su sólido fundamento estadístico, s
 
 La imputación mediante representación en espacio de estados de modelos ARIMA y suavizado de Kalman es un método que combina la capacidad de modelado de los procesos ARIMA con las técnicas de estimación recursiva del filtro y suavizado de Kalman. Este enfoque permite estimar valores faltantes utilizando la estructura de dependencia temporal propia de los modelos ARIMA, incorporando además información tanto pasada como futura de la serie temporal.
 
-Los modelos ARIMA describen la evolución de una serie temporal a partir de relaciones autorregresivas, diferenciación e incorporación de componentes de medias móviles. Aunque tradicionalmente estos modelos se expresan mediante ecuaciones de series temporales, también pueden reformularse en el marco de espacio de estados. En esta representación, la dinámica del modelo queda expresada mediante estados no observables que evolucionan en el tiempo y generan las observaciones de la serie. En el apartado siguiente se presentarán estos modelos con mayor detalle.
+Los modelos ARIMA describen la evolución de una serie temporal a partir de relaciones autorregresivas, diferenciación e incorporación de componentes de medias móviles. Aunque tradicionalmente estos modelos se expresan mediante ecuaciones de series temporales, también pueden reformularse en el marco de espacio de estados. En esta representación, la dinámica del modelo queda expresada mediante estados no observables que evolucionan en el tiempo y generan las observaciones de la serie. En el apartado siguiente se presentan estos modelos con mayor detalle.
 
 A partir de esta formulación, el filtro de Kalman puede utilizarse para estimar recursivamente los estados del modelo y manejar naturalmente la presencia de observaciones faltantes. Cuando ocurre un dato ausente, el algoritmo continúa realizando predicciones utilizando únicamente la estructura estimada del modelo ARIMA y las observaciones disponibles. Posteriormente, cuando se incorporan nuevas observaciones, las estimaciones son ajustadas mediante el mecanismo de actualización del filtro.
 
@@ -601,7 +613,7 @@ A diferencia del análisis predictivo convencional, que puede hacer hincapié en
 
 Formalmente, si se quiere pronosticar el valor $Y_{T+K}$, con $k>0$, para una serie $Y_1,Y_2,\dots,Y_T$, se define $\hat{Y}_{T+K}$ como un predictor lineal de la observación $Y_{T+K}$, obtenido como función de las $T$ observaciones, con origen de predicción $T$ y horizonte de predicción $k$.
 
-A continuación, se describen los modelos de predicción que serán comparados en cada situación.
+A continuación, se describen los modelos de pronóstico que se comparan en cada situación.
 
 ### Modelos ARIMA Y SARIMA
 
@@ -641,7 +653,7 @@ El componente de tendencia puede especificarse mediante una función lineal por 
 
 Una característica relevante para esta investigación es que Prophet admite observaciones faltantes sin requerir una imputación previa. El ajuste se realiza a partir de los pares de tiempo y valor correspondientes a las observaciones disponibles, por lo que no es necesario completar la serie para estimar el modelo. Esta característica permite utilizarlo como una alternativa frente a los enfoques basados en imputación previa, aunque no garantiza por sí sola un mejor desempeño predictivo.
 
-En esta tesina se utilizó la implementación del paquete `prophet` para R, configurada con estacionalidad anual multiplicativa, sin estacionalidad semanal ni diaria y sin incorporar días festivos o eventos especiales. El resto de los hiperparámetros se mantuvo en sus valores predeterminados. A diferencia de ARIMA y ETS, que en este trabajo se ajustan sobre las series previamente completadas mediante los distintos métodos de imputación, Prophet se aplica directamente sobre las series con valores faltantes. Por este motivo, Prophet no constituye una estrategia de *forecast-after-imputation*, sino que se incorpora como un modelo de referencia (*benchmark*), con el objetivo de comparar los enfoques que requieren imputación previa con una alternativa que admite observaciones ausentes durante el ajuste.
+En esta tesina se utilizó la implementación del paquete `prophet` para R, configurada con estacionalidad anual multiplicativa, sin estacionalidad semanal ni diaria y sin incorporar días festivos o eventos especiales. El resto de los hiperparámetros se mantuvo en sus valores predeterminados. A diferencia de ARIMA y ETS, que en este trabajo se ajustan sobre las series previamente completadas mediante los distintos métodos de imputación, Prophet se aplica directamente sobre las series con valores faltantes. Por este motivo, Prophet no constituye una estrategia de desempeño de pronóstico posterior, sino que se incorpora como un modelo de referencia (*benchmark*), con el objetivo de comparar los enfoques que requieren imputación previa con una alternativa que admite observaciones ausentes durante el ajuste.
 
 ## Evaluación del desempeño
 
@@ -897,35 +909,30 @@ Con el objetivo de evaluar el impacto de distintos métodos de imputación sobre
 
 Se seleccionó una serie temporal univariada completa y sobre ella se realizó un análisis exploratorio inicial para identificar su tendencia, estacionalidad, posibles valores atípicos y estructura de autocorrelación. Asimismo, la serie se dividió en un conjunto de entrenamiento y un conjunto de prueba. El conjunto de entrenamiento se utilizó para imputar los datos faltantes y ajustar los modelos de pronóstico, mientras que el conjunto de prueba permaneció sin modificaciones y se empleó exclusivamente para evaluar la capacidad predictiva de los modelos.
 
-A partir de la serie de entrenamiento se generaron artificialmente distintos escenarios de datos faltantes, combinando diferentes porcentajes de observaciones ausentes y distintos mecanismos de generación, con el propósito de reproducir escenarios plausibles en aplicaciones reales. En todos los casos, la introducción de valores faltantes se restringió al interior de la serie, preservando los extremos inicial y final para garantizar que el procedimiento correspondiera a una imputación y no a un problema de pronóstico hacia adelante o hacia atrás. En cada escenario se eliminó el 10, 25 o 40 % de las observaciones del conjunto de entrenamiento (18, 45 y 72 observaciones, respectivamente). En adelante, se denominó serie original a la serie completa, sin faltantes; serie con faltantes a la obtenida tras introducir las ausencias; y serie imputada a la resultante de aplicar un método de imputación. En los cuatro mecanismos la cantidad de faltantes fue exactamente la establecida, de modo que los escenarios son comparables entre mecanismos para un mismo porcentaje. Es importante destacar que en cada réplica los faltantes se generaron una sola vez y todos los métodos y modelos se aplicaron sobre la misma serie con faltantes.
+A partir de la serie de entrenamiento se generaron artificialmente distintos escenarios de datos faltantes, combinando diferentes porcentajes de observaciones ausentes y distintos mecanismos de generación, con el propósito de reproducir escenarios plausibles en aplicaciones reales. En todos los casos, la introducción de valores faltantes se restringió al interior de la serie, preservando los extremos inicial y final para garantizar que el procedimiento correspondiera a una imputación y no a un problema de pronóstico hacia adelante o hacia atrás. En cada escenario se eliminó el 10, 25 o 40 % de las observaciones del conjunto de entrenamiento (18, 45 y 72 observaciones, respectivamente). En adelante, se denominó serie completa a la serie sin faltantes; serie con faltantes a la obtenida tras introducir las ausencias; y serie imputada a la resultante de aplicar un método de imputación. En los cuatro mecanismos la cantidad de faltantes fue exactamente la establecida, de modo que los escenarios son comparables entre mecanismos para un mismo porcentaje. Es importante destacar que en cada réplica los faltantes se generaron una sola vez y todos los métodos y modelos se aplicaron sobre la misma serie con faltantes.
 
 Una vez generados los escenarios, se aplicaron los métodos de imputación considerados para reconstruir las observaciones ausentes. Para reducir el efecto del azar asociado a la ubicación de los faltantes, cada combinación de mecanismo y porcentaje se replicó 100 veces con distintas configuraciones de eliminación aleatoria, de modo que los resultados corresponden al promedio de un elevado número de iteraciones. La calidad de las imputaciones se evaluó comparando los valores imputados con las observaciones originales eliminadas, mediante las métricas RMSE, MAE y MAPE definidas anteriormente.
 
-Luego, sobre las series imputadas se ajustaron los modelos ARIMA/SARIMA y ETS, siguiendo el enfoque *forecast-after-imputation*. Adicionalmente, se ajustó Prophet directamente sobre la serie con faltantes, sin imputación previa, por lo que se incorporó como un modelo de referencia (*benchmark*) externo a dicho esquema, que permitió comparar la estrategia de imputar y luego pronosticar con una alternativa capaz de generar predicciones a partir de series incompletas. Los pronósticos se generaron para horizontes de $h=3, 6\text{ y }12$ períodos y, para cada $h$, el error se calculó sobre los primeros $h$ meses del conjunto de prueba. También se obtuvieron pronósticos de los tres modelos con la serie completa, cuyos resultados se emplearon como línea base. El desempeño predictivo se evaluó comparando los valores pronosticados con las observaciones del conjunto de prueba mediante las mismas métricas utilizadas para la imputación, lo que permitió analizar tanto la capacidad de cada método para reconstruir los valores faltantes como el impacto de las imputaciones sobre los pronósticos posteriores.
+Luego, sobre las series imputadas se ajustaron los modelos ARIMA/SARIMA y ETS, siguiendo el enfoque *forecast-after-imputation*. Adicionalmente, se ajustó Prophet directamente sobre la serie con faltantes, sin imputación previa, por lo que se incorporó como un modelo de referencia externo a dicho esquema, que permitió comparar la estrategia de imputar y luego pronosticar con una alternativa capaz de generar predicciones a partir de series incompletas. Los pronósticos se generaron para horizontes de $h=3, 6\text{ y }12$ períodos y, para cada $h$, el error se calculó sobre los primeros $h$ meses del conjunto de prueba. También se obtuvieron pronósticos de los tres modelos con la serie completa, cuyos resultados se emplearon como línea base. El desempeño predictivo se evaluó comparando los valores pronosticados con las observaciones del conjunto de prueba mediante las mismas métricas utilizadas para la imputación, lo que permitió analizar tanto la capacidad de cada método para reconstruir los valores faltantes como el impacto de las imputaciones sobre los pronósticos posteriores.
 
 El ajuste de los modelos ARIMA/SARIMA se realizó con la función `auto.arima()` y el de los modelos ETS con la función `ets()`, ambas del paquete `forecast` de R, que seleccionan automáticamente una especificación a partir de un conjunto de alternativas mediante un criterio de información. En el caso de `auto.arima()`, la búsqueda consideró distintos órdenes autorregresivos y de media móvil, estacionales y no estacionales, y la necesidad de diferenciación. Por su parte, `ets()` seleccionó la combinación de componentes de error, tendencia y estacionalidad que mejor se ajustó a los datos. En cada escenario se realizaron 100 réplicas; la réplica $i$ utilizó la semilla $123+i$, de modo que los resultados son reproducibles.
 
 El procedimiento propuesto, aplicable a otras series temporales, puede resumirse en las siguientes etapas; su implementación en este trabajo se describió en los párrafos anteriores:
 
-1 - Selección de la serie temporal. Se selecciona una serie temporal univariada completa, que sirve como referencia para la generación de los escenarios experimentales.
+\begin{enumerate}
+  \item \textbf{Selección de la serie temporal.} Se selecciona una serie temporal univariada completa, que sirve como referencia para la generación de los escenarios experimentales.
+  \item \textbf{Análisis exploratorio de la serie.} Se estudian sus principales características (tendencia, estacionalidad, autocorrelación y posibles valores atípicos) y se define la partición entre conjunto de entrenamiento y conjunto de prueba.
+  \item \textbf{Línea base.} Previo a la introducción de faltantes, se ajustan los modelos ARIMA/SARIMA, ETS y Prophet sobre la serie completa y se obtienen los pronósticos para los horizontes de interés.
+  \item \textbf{Generación de datos faltantes.} Se introducen valores faltantes de forma artificial en el conjunto de entrenamiento, con distintos porcentajes, mecanismos y patrones de ausencia.
+  \item \textbf{Aplicación de los métodos de imputación.} Se imputan las observaciones faltantes mediante los métodos considerados.
+  \item \textbf{Evaluación de la imputación.} Se comparan los valores imputados con los valores originales de las observaciones eliminadas mediante RMSE, MAE y MAPE.
+  \item \textbf{Ajuste de los modelos de pronóstico.} Se ajustan ARIMA/SARIMA y ETS sobre las series imputadas, y Prophet sobre la serie con datos faltantes.
+  \item \textbf{Generación de pronósticos.} Se obtienen las predicciones para los horizontes considerados.
+  \item \textbf{Evaluación del pronóstico.} Se comparan los pronósticos con las observaciones del conjunto de prueba mediante RMSE, MAE y MAPE.
+  \item \textbf{Comparación de resultados.} Se analizan conjuntamente los errores de imputación y de pronóstico, y su concordancia, para determinar el efecto de los métodos de imputación sobre el desempeño predictivo de cada modelo.
+\end{enumerate}
 
-2 - Análisis exploratorio de la serie. Se estudian sus principales características (tendencia, estacionalidad, autocorrelación y posibles valores atípicos) y se define la partición entre conjunto de entrenamiento y conjunto de prueba.
 
-3 - Línea base. Previo a la introducción de faltantes, se ajustan los modelos ARIMA/SARIMA, ETS y Prophet sobre la serie completa y se obtienen los pronósticos para los horizontes de interés.
-
-4 - Generación de datos faltantes. Se introducen valores faltantes de forma artificial en el conjunto de entrenamiento, con distintos porcentajes y mecanismos de ausencia.
-
-5 - Aplicación de los métodos de imputación. Se imputan las observaciones faltantes mediante las técnicas consideradas.
-
-6 - Evaluación de la imputación. Se comparan los valores imputados con los originales mediante RMSE, MAE y MAPE.
-
-7 - Ajuste de los modelos de pronóstico. Se ajustan ARIMA/SARIMA y ETS sobre las series imputadas, y Prophet sobre la serie con datos faltantes.
-
-8 - Generación de pronósticos. Se obtienen las predicciones para los horizontes considerados.
-
-9 - Evaluación del pronóstico. Se comparan los pronósticos con las observaciones del conjunto de prueba mediante RMSE, MAE y MAPE.
-
-10 - Comparación de resultados. Se analizan conjuntamente los errores de imputación y de pronóstico, y su concordancia, para determinar el efecto de los métodos de imputación sobre el desempeño predictivo de cada modelo.
 
 ### MCAR (Disperso)
 
@@ -1060,7 +1067,7 @@ El desempeño predictivo de los modelos se presenta mediante gráficos que compa
 
 ![Desempeño de pronóstico usando ARIMA](Figuras/figA_ARIMA.png){#fig-ARIMA width=95%}
 
-La @fig-ARIMA presenta el RMSE de pronóstico con ARIMA según el método de imputación, el porcentaje de faltantes y la ventana de evaluación. Como las ventanas están anidadas, el descenso del RMSE al aumentar $h$ ocurre también con la serie completa y no indica un mejor pronóstico a mayor plazo.
+La @fig-ARIMA presenta el RMSE de pronóstico con ARIMA según el método de imputación, el porcentaje de faltantes y el horizonte de pronóstico. Como las ventanas están anidadas, el descenso del RMSE al aumentar $h$ ocurre también con la serie completa y no indica un mejor pronóstico a mayor plazo.
 
 Con 10 % de faltantes, el mejor método de cada escenario se mantuvo cerca de la serie completa en MCAR, MCAR en bloques y MAR (entre 0,94 y 1,04 veces su RMSE), y los métodos estructurales prácticamente se superpusieron con ella. A medida que aumentó el porcentaje las curvas se separaron: con 40 %, el RMSE del mejor método fue entre 1,04 y 1,31 veces el de la serie completa en esos tres mecanismos, y LOCF quedó claramente por encima de los estructurales (entre 1,36 y 1,91 veces con MCAR, frente a 1,07 a 1,30 de la división estacional y 1,10 a 1,22 del suavizado de Kalman estructural).
 
