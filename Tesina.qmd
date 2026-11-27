@@ -104,15 +104,15 @@ resaltar_min <- function(x, x_num) {
 
 ## Agradecimientos {.unnumbered .unlisted}
 
-En primer lugar, quiero agradecer a mis papás y a mi hermano, por el acompañamiento incondicional a lo largo de toda mi carrera. Por el apoyo, la confianza, la comprensión y el esfuerzo que hicieron posible que llegara hasta esta instancia, y por estar presentes en todo momento. También agradecerle a mi abuela, por todas las veces que me dijo "todo va a salir bien" antes de ir a rendir, y a mi abuelo, por las charlas de fútbol antes de ir a cursar.
+En primer lugar, quiero agradecer a toda mi familia, especialmente a mis papás y a mi hermano, por el acompañamiento incondicional a lo largo de toda mi carrera. Por el apoyo, la confianza, la comprensión y el esfuerzo que hicieron posible que llegara hasta esta instancia, y por estar presentes en todo momento. También agradezco a mi abuela, por todas las veces que me dijo "todo va a salir bien" antes de ir a rendir, y a mi abuelo, por las charlas de fútbol antes de ir a cursar.
 
-A mi novia, por acompañarme durante este proceso, por su paciencia, comprensión, apoyo constante y por todos los fines de semana de estudio juntos. Gracias por estar a mi lado, por alentarme en los momentos de mayor incertidumbre y por compartir conmigo tanto las alegrías como las caídas en esta etapa. 
+A mi novia Candela, por su paciencia, su comprensión y su apoyo constante durante este proceso, y por todos los fines de semana de estudio juntos. Gracias por estar a mi lado, por alentarme en los momentos de mayor incertidumbre y por compartir conmigo tanto las alegrías como los tropiezos de esta etapa.
 
-A mis amigos de la facultad, por haber compartido tantos años de cursado, mates, trabajos y experiencias. Por la ayuda mutua, las charlas, las risas y por hacer que el recorrido universitario fuera mucho más llevadero. Sin dudas, haber compartido este camino con ustedes hizo que la experiencia fuera aún más especial.
+A mis amigos que hice en la facultad, por haber compartido tantos años de cursado, mates, trabajos y experiencias. Por la ayuda mutua, las charlas, las risas y por hacer que el recorrido universitario fuera mucho más llevadero. Sin dudas, haber compartido este camino con ustedes hizo que la experiencia fuera aún más especial.
 
-A mis amigos por fuera de la facultad, por estar siempre presentes, por su compañía y por brindarme ratos de desconexión durante estos años. Gracias por comprender mis tiempos y acompañarme, cada uno a su manera, a lo largo de este recorrido.
+A mis amigos de fuera de la facultad, por estar siempre presentes y por brindarme ratos de desconexión durante estos años. Gracias por entender mis tiempos y acompañarme, cada uno a su manera.
 
-Finalmente, quiero expresar mi agradecimiento a Nanda, mi directora de tesina, por su orientación, dedicación y acompañamiento durante el desarrollo de este trabajo.
+Finalmente, quiero expresar mi agradecimiento a Nanda, mi directora de tesina, por su orientación, su dedicación y su guía durante el desarrollo de este trabajo. Agradezco también a todos los docentes de la facultad por la formación recibida.
 
 A todas las personas que, de una u otra manera, formaron parte de este camino y contribuyeron a que hoy pueda cerrar esta etapa, muchas gracias.
 
